@@ -1,37 +1,59 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void month_day(int year, int yearday, int *pmonth, int *pday);
-int main(int argc, char ** argv){
+static char days[2][13]={{0,31,28,31,30,31,30,31,31,30,31,30,31}, {0,31,29,31,30,31,30,31,31,30,31,30,31}};
 
-    if (argc < 3) {
-    printf("You need to put the correct data\n");
-    return 1;
-  }
+int day_of_year(int year, int month, int day){
+    int i, leap;
+    leap = year%4 == 0 && year%100 != 0 || year%400 == 0;
 
-    int pmonth = 0;
-    int pday = 0;
-    int year = atoi(argv[1]);
-    int yearday = atoi(argv[2]);
-    month_day(year, yearday, &pmonth, &pday);
-    printf(" %d, %s\n", pday, argv[1]);
-    return 0;
+    for (i =1; i<month; i++){
+      day += days[leap][i];
+    }
+    return day;
 }
 
+/* month_day function's prototype*/
 void month_day(int year, int yearday, int *pmonth, int *pday){
-    static char daytab[2][13] = {{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31},{31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31}};
-    static char *months[12] = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
-    int i, leap, previousSum, actualSum;
-    i = leap = previousSum = actualSum = 0;
-    leap = (year%4 == 0 && year%100 != 0) || year%400 ==0;
+  int i, leap;
+  if(year <= 0){
+    printf("Invalid date try again! \n");
+    exit(0);
+    return;
+  }
 
-    for(; yearday > actualSum; i++){
-        previousSum = actualSum;
-        actualSum += daytab[leap][i];
-    }
-    *pday = yearday - prevSum;
-    *pmonth = i;
+  leap = year%4 == 0 && year%100 != 0 || year%400 == 0;
 
-    printf("%s", months[i-1]);
+  for(i=1 ; i<=12 && yearday > days[leap][i];i++){
+    yearday -= days[leap][i];
+  }
+  if(i > 12 && yearday > days[leap][12]){
+    printf("INVALID DATE\n");
+    exit(0);
+  }
+  else{
+    *pmonth=i;
+    *pday=yearday;
+  }
+}
+
+
+char *month_name(int n){
+  static char *name[] = {"Illegal month","January","February", "March","April", "May","June", "July","August", "September","October", "November","December"};
+  return name[n];
+}
+
+int main(int argc, char **argv) {
+
+  int year = atoi(argv[1]);
+  int yearday = atoi(argv[2]);
+
+  int day,mon;
+  month_day(year,yearday,&mon,&day);
+
+  printf("%s %d, %d\n", month_name(mon),day,year);
+
+
+  return 0;
 }
