@@ -4,9 +4,14 @@
 
 int main(int argc, char **argv){
 
-    printf("%d\n", atoi(argv[1]));
-    switch(atoi(argv[1])) {
-    case 1:
+  if (argc != 2) {
+    printf("Invalid test case\n");
+    return 0;
+  }
+  
+  printf("%d\n", atoi(argv[1]));
+  switch(atoi(argv[1])) {
+  case 1:
 	// default logging
 	infof("INFO Message %d", 1);
 	warnf("WARN Message %d", 2);
