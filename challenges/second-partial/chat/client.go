@@ -11,14 +11,21 @@ import (
 	"log"
 	"net"
 	"os"
+	"fmt"
 )
 
 //!+
 func main() {
-	conn, err := net.Dial("tcp", "localhost:8000")
+	if len(os.Args) != 5 {
+		log.Fatal("Error in parameters, usage: go run client.go -user [user] -server [server]")
+	}
+
+	conn, err := net.Dial("tcp", os.Args[4])
 	if err != nil {
 		log.Fatal(err)
 	}
+	
+	fmt.Fprintln(conn, os.Args[2])
 	done := make(chan struct{})
 	go func() {
 		io.Copy(os.Stdout, conn) // NOTE: ignoring errors
